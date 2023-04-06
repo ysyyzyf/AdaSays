@@ -96,12 +96,12 @@ def chat(mode = "gpt-3.5-turbo-0301", msgLoc = "", prompt = "", ct="onetime"):
     msgRequest = []
     msgSave = []
     #load prompt to set character
-    msgRequest = initChat(msgRequest)
-    #msgRequest.append({"role": "system", "content": prompt})
+    msgRequest.append({"role": "system", "content": prompt})
+    #msgRequest = initChat(msgRequest)
     #load chat history
     msgHistory = loadMsg(msgLoc)
     if ct != "onetime":
-        msgRequest = msgRequest# + msgHistory
+        msgRequest = msgRequest + msgHistory
     msgSave = msgRequest + msgHistory
     while keep_chat != "exit":
         keep_chat = input("You: ")
@@ -148,13 +148,16 @@ if __name__ == "__main__":
     parser.add_argument('--character', '-c', action = 'store', default = "ada", \
             required = True, help = "choose the character")
     parser.add_argument('--mode', '-m', action = 'store', default = "onetime", \
-            required = True, help = "choose the character")
+            help = "choose the mode: 'onetime' for don't remember chat")
     parser.add_argument('--key', '-k', action = 'store', default = "m.key", \
-            required = True, help = "set the key")
+            help = "set the file path which stored the ChatGPT's api-key")
+    parser.add_argument('--ip', '-i', action = 'store', default = "localhost", \
+            required = True, help = "when you set proxy for Terminal, \
+                and you want to makesure if you are submittng request with that IP")
     args = parser.parse_args()
     initPrompt = parseCharacter(args.character)
     print("Check if your ip is legal ...")
-    accessGate()
+    accessGate(args.ip)
     print("Welcome to Chat :)")
     keys = parse_key(args.key)
     openai.api_key = keys[0]
